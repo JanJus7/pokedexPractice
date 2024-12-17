@@ -1,6 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import PokemonDetails from "../../components/PokemonDetails";
 
 export default function Pokemon() {
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+
   async function fetchPokemonDetails(pokemonName) {
     // setIsLoading(true);
     try {
@@ -8,7 +13,7 @@ export default function Pokemon() {
         `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
       );
       const data = await response.json();
-      let selectedPokemon = data;
+      setSelectedPokemon(data);
     } catch (error) {
       console.error("Error fetching Pokémon details:", error);
     } finally {
@@ -20,8 +25,7 @@ export default function Pokemon() {
     <div className="body">
       <div className="main">
         {/* {isLoading && <Loader />} */}
-        (
-        <PokemonDetails data={selectedPokemon} />)
+        {selectedPokemon && <PokemonDetails data={selectedPokemon} />}
       </div>
     </div>
   );
