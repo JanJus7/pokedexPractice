@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import PokemonList from "../components/PokemonList";
 import Loader from "../components/Loader";
+import PokemonList from "../components/PokemonList";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
