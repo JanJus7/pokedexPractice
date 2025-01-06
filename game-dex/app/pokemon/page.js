@@ -3,17 +3,22 @@
 import Loader from "../components/Loader";
 import PokemonList from "../components/PokemonList";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { FilterContext } from "./layout";
 
 export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [pokemonList, setPokemonList] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [pokemonList, setFilteredPokemonList] = useState([]);
+  const { selectedType } = useContext(FilterContext);
 
   useEffect(() => {
-    fetchPokemonList();
-  }, []);
+    if (selectedType) {
+      fetchFilteredPokemon(selectedType);
+    } else {
+      fetchPokemonList();
+    }
+  }, [selectedType]);
 
   async function fetchPokemonList() {
     setIsLoading(true);
@@ -28,10 +33,33 @@ export default function Home() {
         })
       );
 
-      setPokemonList(detailedPokemonList);
-      setSelectedPokemon(null);
+      setFilteredPokemonList(detailedPokemonList);
     } catch (error) {
       console.error("Error fetching Pokémon list:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchFilteredPokemon(type) {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+      const data = await response.json();
+      const pokemonNames = data.pokemon.map((p) => p.pokemon.name);
+
+      const detailedPokemonList = await Promise.all(
+        pokemonNames.map(async (name) => {
+          const pokemonDetailsResponse = await fetch(
+            `https://pokeapi.co/api/v2/pokemon/${name}`
+          );
+          return pokemonDetailsResponse.json();
+        })
+      );
+
+      setFilteredPokemonList(detailedPokemonList);
+    } catch (error) {
+      console.error("Error filtering Pokémon by type:", error);
     } finally {
       setIsLoading(false);
     }
@@ -40,11 +68,6 @@ export default function Home() {
   async function fetchPokemonDetails(pokemonName) {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
-      );
-      const data = await response.json();
-      setSelectedPokemon(data);
       router.push(`/pokemon/${pokemonName}`);
     } catch (error) {
       console.error("Error fetching Pokémon details:", error);
