@@ -1,18 +1,33 @@
-function Header({ returnHome, findPokemon }) {
-  let searchInput = "";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+
+function Header({ returnHome }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || ""
+  );
 
   function handleSearchInput(event) {
-    searchInput = event.target.value;
-  }
-
-  function handleSearch(event) {
     if (event.key === "Enter") {
-      findPokemon(searchInput);
+      executeSearch();
     }
   }
 
   function handleSearchButton() {
-    findPokemon(searchInput);
+    executeSearch();
+  }
+
+  function executeSearch() {
+    const params = new URLSearchParams(searchParams);
+    if (searchInput) {
+      params.set("search", searchInput);
+    } else {
+      params.delete("search");
+    }
+
+    router.push(`/pokemon?${params.toString()}`);
   }
 
   return (
@@ -25,8 +40,9 @@ function Header({ returnHome, findPokemon }) {
           className="buttons searchFor"
           type="text"
           placeholder="Search..."
-          onInput={handleSearchInput}
-          onKeyDown={handleSearch}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={handleSearchInput}
         />
         <button onClick={handleSearchButton} className="buttons searchButton">
           <i className="fa-solid fa-magnifying-glass"></i>

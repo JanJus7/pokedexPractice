@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
-import { FilterContext } from "../pokemon/layout";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Navigation() {
   const [types, setTypes] = useState([]);
-  const { selectedType, setSelectedType } = useContext(FilterContext);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const selectedType = searchParams.get("type") || "";
 
   useEffect(() => {
     async function fetchTypes() {
@@ -20,12 +23,18 @@ export default function Navigation() {
   }, []);
 
   function handleTypeChange(e) {
-    setSelectedType(e.target.value);
+    const type = e.target.value;
+    const params = new URLSearchParams(searchParams);
+    if (type) {
+      params.set("type", type);
+    } else {
+      params.delete("type");
+    }
+    router.push(`/pokemon?${params.toString()}`);
   }
 
   return (
     <nav>
-      
       <select id="typeFilter" value={selectedType} onChange={handleTypeChange}>
         <option value="">All Types</option>
         {types.map((type) => (

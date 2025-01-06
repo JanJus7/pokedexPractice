@@ -2,87 +2,98 @@
 
 import Loader from "../components/Loader";
 import PokemonList from "../components/PokemonList";
-import { useRouter } from "next/navigation";
-import { useState, useEffect, useContext } from "react";
-import { FilterContext } from "./layout";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [pokemonList, setFilteredPokemonList] = useState([]);
-  const { selectedType } = useContext(FilterContext);
+  const [filteredPokemon, setFilteredPokemon] = useState([]);
+  const [allPokemon, setAllPokemon] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(250);
+
+  const searchQuery = searchParams.get("search") || "";
+  const selectedType = searchParams.get("type") || "";
+
+  function loadMore() {
+    setItemsPerPage((prev) => prev + 250);
+  }
 
   useEffect(() => {
-    if (selectedType) {
-      fetchFilteredPokemon(selectedType);
-    } else {
-      fetchPokemonList();
-    }
-  }, [selectedType]);
+    async function fetchPokemonData() {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?limit=1320`
+        );
+        const data = await response.json();
 
-  async function fetchPokemonList() {
-    setIsLoading(true);
-    try {
-      const response = await fetch("https://pokeapi.co/api/v2/pokemon");
-      const data = await response.json();
+        let allPokemonData = data.results;
 
-      const detailedPokemonList = await Promise.all(
-        data.results.map(async (pokemon) => {
-          const pokemonDetailsResponse = await fetch(pokemon.url);
-          return pokemonDetailsResponse.json();
-        })
-      );
+        if (selectedType) {
+          allPokemonData = await filterByType(allPokemonData, selectedType);
+        }
 
-      setFilteredPokemonList(detailedPokemonList);
-    } catch (error) {
-      console.error("Error fetching Pokémon list:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function fetchFilteredPokemon(type) {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
-      const data = await response.json();
-      const pokemonNames = data.pokemon.map((p) => p.pokemon.name);
-
-      const detailedPokemonList = await Promise.all(
-        pokemonNames.map(async (name) => {
-          const pokemonDetailsResponse = await fetch(
-            `https://pokeapi.co/api/v2/pokemon/${name}`
+        if (searchQuery) {
+          allPokemonData = allPokemonData.filter((pokemon) =>
+            pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
           );
-          return pokemonDetailsResponse.json();
-        })
-      );
+        }
 
-      setFilteredPokemonList(detailedPokemonList);
-    } catch (error) {
-      console.error("Error filtering Pokémon by type:", error);
-    } finally {
-      setIsLoading(false);
+        const pokemonDetails = await Promise.all(
+          allPokemonData.map(async (pokemon) => {
+            const detailResponse = await fetch(pokemon.url);
+            return detailResponse.json();
+          })
+        );
+
+        setAllPokemon(pokemonDetails);
+        setFilteredPokemon(pokemonDetails.slice(0, itemsPerPage));
+      } catch (error) {
+        console.error("Error fetching Pokémon data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
+
+    fetchPokemonData();
+  }, [searchQuery, selectedType]);
+
+  useEffect(() => {
+    setFilteredPokemon(allPokemon.slice(0, itemsPerPage));
+  }, [itemsPerPage]);
+
+  async function filterByType(pokemonList, type) {
+    const filteredPokemon = [];
+    for (const pokemon of pokemonList) {
+      const detailResponse = await fetch(pokemon.url);
+      const pokemonDetails = await detailResponse.json();
+
+      if (pokemonDetails.types.some((t) => t.type.name === type)) {
+        filteredPokemon.push(pokemon);
+      }
+    }
+    return filteredPokemon;
   }
 
-  async function fetchPokemonDetails(pokemonName) {
-    setIsLoading(true);
-    try {
-      router.push(`/pokemon/${pokemonName}`);
-    } catch (error) {
-      console.error("Error fetching Pokémon details:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  function handlePokemonClick(pokemonName) {
+    router.push(`/pokemon/${pokemonName}`);
   }
 
   return (
     <div className="body">
       <div className="main">
         {isLoading && <Loader />}
-        (
-        <PokemonList data={pokemonList} onPokemonClick={fetchPokemonDetails} />)
+        <PokemonList
+          data={filteredPokemon}
+          onPokemonClick={handlePokemonClick}
+        />
       </div>
+      <button onClick={loadMore} className="more">
+        Load more results
+      </button>
     </div>
   );
 }
