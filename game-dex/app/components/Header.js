@@ -1,18 +1,22 @@
-function Header({ returnHome, findPokemon }) {
-  let searchInput = "";
+import { useRouter, useSearchParams } from "next/navigation";
+
+function Header({ returnHome }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const searchQuery = searchParams.get("search") || "";
 
   function handleSearchInput(event) {
-    searchInput = event.target.value;
-  }
+    const params = new URLSearchParams(searchParams);
+    const value = event.target.value;
 
-  function handleSearch(event) {
-    if (event.key === "Enter") {
-      findPokemon(searchInput);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
     }
-  }
 
-  function handleSearchButton() {
-    findPokemon(searchInput);
+    router.push(`/pokemon?${params.toString()}`);
   }
 
   return (
@@ -25,10 +29,13 @@ function Header({ returnHome, findPokemon }) {
           className="buttons searchFor"
           type="text"
           placeholder="Search..."
+          defaultValue={searchQuery}
           onInput={handleSearchInput}
-          onKeyDown={handleSearch}
         />
-        <button onClick={handleSearchButton} className="buttons searchButton">
+        <button
+          onClick={() => router.push(`/pokemon?${searchParams.toString()}`)}
+          className="buttons searchButton"
+        >
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
