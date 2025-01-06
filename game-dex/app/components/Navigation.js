@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-
 export default function Navigation() {
   const [types, setTypes] = useState([]);
   const searchParams = useSearchParams();

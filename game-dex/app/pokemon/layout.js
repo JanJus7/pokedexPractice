@@ -17,10 +17,8 @@ export default function Layout({ children }) {
   }
 
   function findPokemon(searchInput) {
-    const pokemonName = searchInput.toLowerCase();
-    if (pokemonName) {
-      router.push(`/pokemon/${pokemonName}`);
-    }
+    const element = searchInput.trim().toLowerCase();
+    router.push(`/pokemon?search=${element}`);
   }
 
   return (

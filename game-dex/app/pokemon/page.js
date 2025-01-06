@@ -10,70 +10,75 @@ export default function Home() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [pokemonList, setPokemonList] = useState([]);
+  const [filteredPokemon, setFilteredPokemon] = useState([]);
+  const [allPokemon, setAllPokemon] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(250);
 
-  const selectedType = searchParams.get("type");
-  const searchQuery = searchParams.get("search");
+  const searchQuery = searchParams.get("search") || "";
+  const selectedType = searchParams.get("type") || "";
 
-  useEffect(() => {
-    fetchFilteredPokemon(selectedType, searchQuery);
-  }, [selectedType, searchQuery]);
-
-  async function fetchFilteredPokemon(type, search) {
-    setIsLoading(true);
-    try {
-      let url = "https://pokeapi.co/api/v2/pokemon?limit=100";
-
-      if (type) {
-        const typeResponse = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
-        const typeData = await typeResponse.json();
-        const filteredPokemonNames = typeData.pokemon.map((p) => p.pokemon.name);
-
-        const filteredByType = await Promise.all(
-          filteredPokemonNames.map(async (name) => {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-            return response.json();
-          })
-        );
-
-        if (search) {
-          setPokemonList(
-            filteredByType.filter((pokemon) =>
-              pokemon.name.toLowerCase().includes(search.toLowerCase())
-            )
-          );
-        } else {
-          setPokemonList(filteredByType);
-        }
-      } else {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const allPokemon = await Promise.all(
-          data.results.map(async (pokemon) => {
-            const response = await fetch(pokemon.url);
-            return response.json();
-          })
-        );
-
-        if (search) {
-          setPokemonList(
-            allPokemon.filter((pokemon) =>
-              pokemon.name.toLowerCase().includes(search.toLowerCase())
-            )
-          );
-        } else {
-          setPokemonList(allPokemon);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching Pokémon:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  function loadMore() {
+    setItemsPerPage((prev) => prev + 250);
   }
 
-  function fetchPokemonDetails(pokemonName) {
+  useEffect(() => {
+    async function fetchPokemonData() {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?limit=1320`
+        );
+        const data = await response.json();
+
+        let allPokemonData = data.results;
+
+        if (selectedType) {
+          allPokemonData = await filterByType(allPokemonData, selectedType);
+        }
+
+        if (searchQuery) {
+          allPokemonData = allPokemonData.filter((pokemon) =>
+            pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+
+        const pokemonDetails = await Promise.all(
+          allPokemonData.map(async (pokemon) => {
+            const detailResponse = await fetch(pokemon.url);
+            return detailResponse.json();
+          })
+        );
+
+        setAllPokemon(pokemonDetails);
+        setFilteredPokemon(pokemonDetails.slice(0, itemsPerPage));
+      } catch (error) {
+        console.error("Error fetching Pokémon data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchPokemonData();
+  }, [searchQuery, selectedType]);
+
+  useEffect(() => {
+    setFilteredPokemon(allPokemon.slice(0, itemsPerPage));
+  }, [itemsPerPage]);
+
+  async function filterByType(pokemonList, type) {
+    const filteredPokemon = [];
+    for (const pokemon of pokemonList) {
+      const detailResponse = await fetch(pokemon.url);
+      const pokemonDetails = await detailResponse.json();
+
+      if (pokemonDetails.types.some((t) => t.type.name === type)) {
+        filteredPokemon.push(pokemon);
+      }
+    }
+    return filteredPokemon;
+  }
+
+  function handlePokemonClick(pokemonName) {
     router.push(`/pokemon/${pokemonName}`);
   }
 
@@ -81,8 +86,14 @@ export default function Home() {
     <div className="body">
       <div className="main">
         {isLoading && <Loader />}
-        <PokemonList data={pokemonList} onPokemonClick={fetchPokemonDetails} />
+        <PokemonList
+          data={filteredPokemon}
+          onPokemonClick={handlePokemonClick}
+        />
       </div>
+      <button onClick={loadMore} className="more">
+        Load more results
+      </button>
     </div>
   );
 }

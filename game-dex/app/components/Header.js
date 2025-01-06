@@ -1,17 +1,28 @@
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 function Header({ returnHome }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const searchQuery = searchParams.get("search") || "";
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || ""
+  );
 
   function handleSearchInput(event) {
-    const params = new URLSearchParams(searchParams);
-    const value = event.target.value;
+    if (event.key === "Enter") {
+      executeSearch();
+    }
+  }
 
-    if (value) {
-      params.set("search", value);
+  function handleSearchButton() {
+    executeSearch();
+  }
+
+  function executeSearch() {
+    const params = new URLSearchParams(searchParams);
+    if (searchInput) {
+      params.set("search", searchInput);
     } else {
       params.delete("search");
     }
@@ -29,13 +40,11 @@ function Header({ returnHome }) {
           className="buttons searchFor"
           type="text"
           placeholder="Search..."
-          defaultValue={searchQuery}
-          onInput={handleSearchInput}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={handleSearchInput}
         />
-        <button
-          onClick={() => router.push(`/pokemon?${searchParams.toString()}`)}
-          className="buttons searchButton"
-        >
+        <button onClick={handleSearchButton} className="buttons searchButton">
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
