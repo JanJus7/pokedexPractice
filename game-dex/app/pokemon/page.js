@@ -62,7 +62,10 @@ export default function Home() {
   }, [searchQuery, selectedType]);
 
   useEffect(() => {
+    const params = new URLSearchParams(searchParams);
     setFilteredPokemon(allPokemon.slice(0, itemsPerPage));
+    params.set("limit", itemsPerPage);
+    router.push(`/pokemon?${params.toString()}`);
   }, [itemsPerPage]);
 
   async function filterByType(pokemonList, type) {
