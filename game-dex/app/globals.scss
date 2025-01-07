@@ -82,13 +82,46 @@ header {
   align-items: center;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+
+  .more {
+    background-color: #121212;
+    border-radius: 100%;
+    border: none;
+    font-weight: bolder;
+    font-size: 4rem;
+    color: #d0d0d0;
+    padding: 3px 6px 0 6px;
+    margin: 1rem 0 2rem 0;
+    transition: background-color 0.8s ease, color 0.8s ease;
   
+    &:hover {
+      background-color: #4d4d4d;
+      cursor: pointer;
+    }
+  }
 }
 
 .pokemon-list {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+
+  .boxFav {
+    background-color: #121212;
+    border-radius: 100%;
+    border: none;
+    font-weight: bolder;
+    font-size: 4rem;
+    color: #d0d0d0;
+    padding: 3px 6px 0 6px;
+    transition: background-color 0.8s ease, color 0.8s ease;
+  
+    &:hover {
+      background-color: #4d4d4d;
+      cursor: pointer;
+    }
+  }
 }
 
 .pokemon-item {
@@ -168,4 +201,38 @@ img {
   }
 }
   
+nav {
+  align-items: flex-start;
+  background-color: #100c0c;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  height: calc(100vh - 4rem);
+  width: 15rem;
+  z-index: 99;
+
+  .navButtons {
+    padding: 0.5rem;
+    width: 50%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    background-color: #121212;
+    border-radius: 25px;
+    border: none;
+    color: #d0d0d0;
+    transition: background-color 0.8s ease, color 0.8s ease;
+
+    &:hover {
+      background-color: #272727;
+      cursor: pointer;
+    }
+  }
+}
+
+
+
   
