@@ -39,7 +39,7 @@ export default function Navigation() {
 
   return (
     <nav>
-      <select id="typeFilter" value={selectedType} onChange={handleTypeChange}>
+      <select className="typeFilter navButtons" value={selectedType} onChange={handleTypeChange}>
         <option value="">All Types</option>
         {types.map((type) => (
           <option key={type.name} value={type.name}>
@@ -47,7 +47,7 @@ export default function Navigation() {
           </option>
         ))}
       </select>
-      <button id="toFav" onClick={toFavourites}>Favourites</button>
+      <button className="toFav navButtons" onClick={toFavourites}>Favourites</button>
     </nav>
   );
 }

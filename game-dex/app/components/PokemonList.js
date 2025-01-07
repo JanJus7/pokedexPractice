@@ -20,6 +20,8 @@ function PokemonList({ data, onPokemonClick }) {
     const updatedFavourites = storedFavourites.filter((fav) => fav.id !== pokemon.id);
   
     localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
+
+    window.location.reload();
   };
   
 
@@ -38,7 +40,7 @@ function PokemonList({ data, onPokemonClick }) {
           <button className="boxFav" onClick={() => addToFavourites(pokemon)}>
             <i className="fa-regular fa-heart"></i>
           </button>
-          <button className="boxUnFav" onClick={() => discardFromFavourites(pokemon)}>
+          <button className="boxFav" onClick={() => discardFromFavourites(pokemon)}>
             <i className="fa-solid fa-heart-crack"></i>
           </button>
         </div>

@@ -93,10 +93,10 @@ export default function Home() {
           data={filteredPokemon}
           onPokemonClick={handlePokemonClick}
         />
+        <button onClick={loadMore} className="more">
+          <i className="fa-regular fa-circle-down"></i>
+        </button>
       </div>
-      <button onClick={loadMore} className="more">
-        Load more results
-      </button>
     </div>
   );
 }
