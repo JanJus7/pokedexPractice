@@ -9,14 +9,15 @@ export default function FavouritesPage() {
   const [favourites, setFavourites] = useState([]);
 
   useEffect(() => {
-    // Wczytywanie ulubionych Pokemonów z localStorage
-    const storedFavourites = JSON.parse(localStorage.getItem("favourites")) || [];
+    const storedFavourites =
+      JSON.parse(localStorage.getItem("favourites")) || [];
     setFavourites(storedFavourites);
   }, []);
 
   const handleRemoveFavourite = (pokemonId) => {
-    // Usuwanie Pokemona z ulubionych
-    const updatedFavourites = favourites.filter((pokemon) => pokemon.id !== pokemonId);
+    const updatedFavourites = favourites.filter(
+      (pokemon) => pokemon.id !== pokemonId
+    );
     setFavourites(updatedFavourites);
     localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
   };
@@ -24,14 +25,13 @@ export default function FavouritesPage() {
   return (
     <div className="body">
       <div className="main">
-        <h1>Ulubione Pokemony</h1>
         {favourites.length === 0 ? (
-          <p>Nie masz jeszcze żadnych ulubionych Pokémonów.</p>
+          <p className="textFav">Favourite Pokemon list is empty...</p>
         ) : (
           <PokemonList
             data={favourites}
             onPokemonClick={(pokemonId) => router.push(`/pokemon/${pokemonId}`)}
-            onRemoveFavourite={handleRemoveFavourite} // Przesyłamy funkcję do usuwania z ulubionych
+            onRemoveFavourite={handleRemoveFavourite}
           />
         )}
       </div>

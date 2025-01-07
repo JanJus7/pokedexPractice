@@ -34,12 +34,16 @@ export default function Navigation() {
   }
 
   function toFavourites() {
-    router.push(`/pokemon/favourites`)
+    router.push(`/pokemon/favourites`);
   }
 
   return (
     <nav>
-      <select className="typeFilter navButtons" value={selectedType} onChange={handleTypeChange}>
+      <select
+        className="typeFilter navButtons"
+        value={selectedType}
+        onChange={handleTypeChange}
+      >
         <option value="">All Types</option>
         {types.map((type) => (
           <option key={type.name} value={type.name}>
@@ -47,7 +51,9 @@ export default function Navigation() {
           </option>
         ))}
       </select>
-      <button className="toFav navButtons" onClick={toFavourites}>Favourites</button>
+      <button className="toFav navButtons" onClick={toFavourites}>
+        Favourites
+      </button>
     </nav>
   );
 }
