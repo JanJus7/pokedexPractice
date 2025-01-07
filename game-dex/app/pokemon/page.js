@@ -12,7 +12,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [filteredPokemon, setFilteredPokemon] = useState([]);
   const [allPokemon, setAllPokemon] = useState([]);
-  const [itemsPerPage, setItemsPerPage] = useState(250);
+  const [itemsPerPage, setItemsPerPage] = useState(
+    parseInt(searchParams.get("limit")) || 250
+  );
 
   const searchQuery = searchParams.get("search") || "";
   const selectedType = searchParams.get("type") || "";
