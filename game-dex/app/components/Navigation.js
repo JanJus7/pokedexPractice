@@ -33,6 +33,10 @@ export default function Navigation() {
     router.push(`/pokemon?${params.toString()}`);
   }
 
+  function toFavourites() {
+    router.push(`/pokemon/favourites`)
+  }
+
   return (
     <nav>
       <select id="typeFilter" value={selectedType} onChange={handleTypeChange}>
@@ -43,6 +47,7 @@ export default function Navigation() {
           </option>
         ))}
       </select>
+      <button id="toFav" onClick={toFavourites}>Favourites</button>
     </nav>
   );
 }
