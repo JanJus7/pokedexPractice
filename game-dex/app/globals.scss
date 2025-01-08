@@ -112,6 +112,7 @@ header {
     border-radius: 25px;
     border: none;
     padding: 0.5rem;
+    width: 40rem;
 
     .pokemon-item {
       align-items: center;
@@ -124,7 +125,7 @@ header {
       height: 40rem;
       justify-content: space-evenly;
       transition: background-color 0.8s ease, color 0.8s ease;
-      width: 40rem;
+      width: 100%; 
     
       &:hover {
         background-color: #3f3f3f;
@@ -232,12 +233,12 @@ nav {
   top: 4rem;
   left: 0;
   height: calc(100vh - 4rem);
-  width: 15rem;
+  width: 5rem;
   z-index: 99;
 
   .navButtons {
     padding: 0.5rem;
-    width: 50%;
+    width: 100%;
     text-align: center;
     margin-bottom: 0.5rem;
     background-color: #121212;
@@ -256,7 +257,3 @@ nav {
 .textFav {
   color: #d0d0d0;
 }
-
-
-
-  
