@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import PokemonList from "../../components/PokemonList";
 
 export default function ComparePage() {
-  const router = useRouter();
   const [compared, setCompared] = useState([]);
 
   useEffect(() => {
@@ -13,26 +10,72 @@ export default function ComparePage() {
     setCompared(storedCompares);
   }, []);
 
-  const handleRemoveCompared = (pokemonId) => {
-    const updatedCompared = compared.filter(
-      (pokemon) => pokemon.id !== pokemonId
-    );
-    setCompared(updatedCompared);
-    localStorage.setItem("compared", JSON.stringify(updatedCompared));
+  const handleClearComparison = () => updateCompared([]);
+
+  const updateCompared = (updated) => {
+    setCompared(updated);
+    localStorage.setItem("compared", JSON.stringify(updated));
   };
 
+  const getComparisonClass = (val1, val2) =>
+    val1 > val2 ? "green-text" : val1 < val2 ? "red-text" : "";
+
+  const renderStatsRow = (statName, value1, value2) => (
+    <tr key={statName}>
+      <td>{statName}</td>
+      <td className={getComparisonClass(value1, value2)}>{value1}</td>
+      <td className={getComparisonClass(value2, value1)}>{value2}</td>
+    </tr>
+  );
+
+  if (!compared.length) {
+    return <p className="textFav">Compared Pokemon list is empty...</p>;
+  }
+
+  const [poke1, poke2] = compared;
   return (
     <div className="body">
-      <div className="main">
-        {compared.length === 0 ? (
-          <p className="textFav">Compared Pokemon list is empty...</p>
-        ) : (
-          <PokemonList
-            data={compared}
-            onPokemonClick={(pokemonId) => router.push(`/pokemon/${pokemonId}`)}
-            onRemoveCompared={handleRemoveCompared}
-          />
-        )}
+      <div className="main pokemon-comparison">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>{poke1?.name}</th>
+              <th>{poke2?.name}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              {[poke1, poke2].map((p, i) => (
+                <td key={i} className="pokemon-image">
+                  <img src={p?.sprites.front_default} alt={p?.name} />
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td>Types</td>
+              {[poke1, poke2].map((p, i) => (
+                <td key={i}>
+                  <ul className="pokemon-types">
+                    {p?.types.map(({ type }) => (
+                      <li key={type.name}>{type.name}</li>
+                    ))}
+                  </ul>
+                </td>
+              ))}
+            </tr>
+            {["Weight", "Height"].map((attribute) =>
+              renderStatsRow(attribute, poke1[attribute.toLowerCase()], poke2[attribute.toLowerCase()])
+            )}
+            {poke1.stats.map(({ stat, base_stat }, i) =>
+              renderStatsRow(stat.name, base_stat, poke2.stats[i]?.base_stat)
+            )}
+          </tbody>
+        </table>
+        <button className="clear-button" onClick={handleClearComparison}>
+          <i className="fa-regular fa-trash-can"></i> Clear all...
+        </button>
       </div>
     </div>
   );

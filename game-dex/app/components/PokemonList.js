@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 function PokemonList({ data, onPokemonClick }) {
   const [favouritePokemonIds, setFavouritePokemonIds] = useState([]);
   const [comparedPokemonIds, setComparedPokemonIds] = useState([]);
+  const [comparedPokemonCount, setComparedPokemonCount] = useState(0);
 
   useEffect(() => {
     const storedFavourites =
@@ -15,6 +16,7 @@ function PokemonList({ data, onPokemonClick }) {
     const storedCompares = JSON.parse(localStorage.getItem("compared")) || [];
     const comparedIds = storedCompares.map((pokemon) => pokemon.id);
     setComparedPokemonIds(comparedIds);
+    setComparedPokemonCount(comparedIds.length);
   }, []);
 
   const handleFavouriteToggle = (pokemon) => {
@@ -37,14 +39,20 @@ function PokemonList({ data, onPokemonClick }) {
   };
 
   const handleCompareToggle = (pokemon) => {
+    if (comparedPokemonCount >= 2 && !comparedPokemonIds.includes(pokemon.id)) {
+      return;
+    }
+
     const isComparedAlready = comparedPokemonIds.includes(pokemon.id);
 
     if (isComparedAlready) {
       setComparedPokemonIds(
         comparedPokemonIds.filter((id) => id !== pokemon.id)
       );
+      setComparedPokemonCount(comparedPokemonCount - 1);
     } else {
       setComparedPokemonIds([...comparedPokemonIds, pokemon.id]);
+      setComparedPokemonCount(comparedPokemonCount + 1);
     }
 
     const storedCompares = JSON.parse(localStorage.getItem("compared")) || [];
@@ -76,10 +84,12 @@ function PokemonList({ data, onPokemonClick }) {
             </button>
             <h3>{pokemon.name}</h3>
             <button
-              className={`boxFavComp ${
-                comparedPokemonIds.includes(pokemon.id) ? "pink" : "gray"
-              }`}
+              className={`boxFavComp ${comparedPokemonIds.includes(pokemon.id) ? "yellow" : "gray"}`}
               onClick={() => handleCompareToggle(pokemon)}
+              disabled={
+                comparedPokemonCount >= 2 &&
+                !comparedPokemonIds.includes(pokemon.id)
+              }
             >
               <i className="fa-solid fa-scale-balanced"></i>
             </button>
