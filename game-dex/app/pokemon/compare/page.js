@@ -29,7 +29,13 @@ export default function ComparePage() {
   );
 
   if (!compared.length) {
-    return <p className="textFav">Compared Pokemon list is empty...</p>;
+    return (
+      <div className="body">
+        <div className="main">
+          <p className="textFav">Compared Pokemon list is empty...</p>
+        </div>
+      </div>
+    );
   }
 
   const [poke1, poke2] = compared;
@@ -66,7 +72,11 @@ export default function ComparePage() {
               ))}
             </tr>
             {["Weight", "Height"].map((attribute) =>
-              renderStatsRow(attribute, poke1[attribute.toLowerCase()], poke2[attribute.toLowerCase()])
+              renderStatsRow(
+                attribute,
+                poke1[attribute.toLowerCase()],
+                poke2[attribute.toLowerCase()]
+              )
             )}
             {poke1.stats.map(({ stat, base_stat }, i) =>
               renderStatsRow(stat.name, base_stat, poke2.stats[i]?.base_stat)
