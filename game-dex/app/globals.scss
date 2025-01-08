@@ -1,18 +1,26 @@
-// globals.scss
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+@import '_variables';
+
+
+@mixin hover-effect {
+  &:hover {
+    background-color: $tertiary-background-color;
+    cursor: pointer;
+  }
+}
 
 * {
-    margin: 0;
-    padding: 0;
-  }
-  
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: #100c0c;
+  background-color: $background-color;
 }
 
 header {
   align-items: center;
-  background-color: #100c0c;
+  background-color: $background-color;
   display: flex;
   justify-content: space-between;
   padding: 1rem;
@@ -29,25 +37,21 @@ header {
 }
 
 .homeButton {
-  background-color: #121212;
-  border-radius: 25px;
+  background-color: $secondary-background-color;
+  border-radius: $border-radius;
   border: none;
-  color: #d0d0d0;
+  color: $text-color;
   padding: 0.5rem;
   transition: background-color 0.8s ease, color 0.8s ease;
-
-  &:hover {
-    background-color: #272727;
-    cursor: pointer;
-  }
+  @include hover-effect;
 }
 
 .searchFor {
-  background-color: #121212;
-  border-bottom-left-radius: 25px;
-  border-top-left-radius: 25px;
-  border: 1px solid #a0a0a0;
-  color: #d0d0d0;
+  background-color: $secondary-background-color;
+  border-bottom-left-radius: $border-radius;
+  border-top-left-radius: $border-radius;
+  border: 1px solid $border-color;
+  color: $text-color;
   flex-grow: 1;
   font-size: 1rem;
   padding: 0.5rem 1rem;
@@ -62,11 +66,11 @@ header {
 .searchButton {
   align-items: center;
   background-color: #222222;
-  border-bottom-right-radius: 25px; 
+  border-bottom-right-radius: $border-radius; 
   border-left: none;
-  border-top-right-radius: 25px;  
-  border: 1px solid #a0a0a0;
-  color: #d0d0d0;
+  border-top-right-radius: $border-radius;  
+  border: 1px solid $border-color;
+  color: $text-color;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -81,18 +85,18 @@ header {
 .main {
   align-items: center;
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  justify-content: center;
 
   .more {
-    background-color: #121212;
+    background-color: $secondary-background-color;
     border-radius: 100%;
     border: none;
-    font-weight: bolder;
+    color: $text-color;
     font-size: 4rem;
-    color: #d0d0d0;
-    padding: 3px 6px 0 6px;
+    font-weight: bolder;
     margin: 1rem 0 2rem 0;
+    padding: 3px 6px 0 6px;
     transition: background-color 0.8s ease, color 0.8s ease;
   
     &:hover {
@@ -108,16 +112,16 @@ header {
   gap: 2rem;
 
   .pokemon-container {
-    background-color: #3f3f3f;
-    border-radius: 25px;
+    background-color: $highlight-color;
+    border-radius: $border-radius;
     border: none;
     padding: 0.5rem;
-    width: 40rem;
+    width: 50rem;
 
     .pokemon-item {
       align-items: center;
-      background-color: #272727;
-      border-radius: 25px;
+      background-color: $tertiary-background-color;
+      border-radius: $border-radius;
       border: none;
       color: white;
       display: flex;
@@ -126,23 +130,19 @@ header {
       justify-content: space-evenly;
       transition: background-color 0.8s ease, color 0.8s ease;
       width: 100%; 
-    
-      &:hover {
-        background-color: #3f3f3f;
-        cursor: pointer;
-      }
+      @include hover-effect;
     }
 
     .nameAndFav {
-      display: flex;
       align-items: center;
+      display: flex;
       width: 100%;
 
       h3 {
-        font-size: 5rem;
-        text-align: center;
-        flex-grow: 1;
         color: white;
+        flex-grow: 1;
+        font-size: $font-size-large;
+        text-align: center;
       }
 
       .boxFavComp {
@@ -157,11 +157,15 @@ header {
         }
     
         &.gray {
-          color: #d0d0d0;
+          color: $text-color;
         }
       
         &.pink {
-          color: #ff69b4;
+          color: $pink-color;
+        }
+
+        &.yellow {
+          color: $yellow-color;
         }
       }
     }
@@ -169,7 +173,7 @@ header {
 }
 
 p {
-  font-size: 2rem;
+  font-size: $font-size-medium;
 }
 
 img {
@@ -179,8 +183,8 @@ img {
 
 .pokemon-details {
   align-items: center;
-  background-color: #272727;
-  border-radius: 25px;
+  background-color: $tertiary-background-color;
+  border-radius: $border-radius;
   border: none;
   color: white;
   display: flex;
@@ -196,12 +200,12 @@ img {
   }
 
   h2 {
-    font-size: 5rem;
+    font-size: $font-size-large;
   }
 }
 
 .loader {
-  color: #3498db;
+  color: #3498db; 
   left: 50%;
   position: fixed;
   top: 50%;
@@ -224,40 +228,120 @@ img {
   
 nav {
   align-items: flex-start;
-  background-color: #100c0c;
+  background-color: $background-color;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 4rem);
   justify-content: flex-start;
+  left: 0;
   padding: 1rem;
   position: fixed;
   top: 4rem;
-  left: 0;
-  height: calc(100vh - 4rem);
   width: 5rem;
   z-index: 99;
 
   .navButtons {
-    padding: 0.5rem;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 0.5rem;
-    background-color: #121212;
-    border-radius: 25px;
+    background-color: $secondary-background-color;
     border: none;
-    color: #d0d0d0;
+    border-radius: $border-radius;
+    color: $text-color;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
     transition: background-color 0.8s ease, color 0.8s ease;
-
-    &:hover {
-      background-color: #272727;
-      cursor: pointer;
-    }
+    width: 100%;
+    @include hover-effect;
   }
 }
 
 .textFav {
-  color: #d0d0d0;
+  color: $text-color;
 }
 
 .fa-circle-dot {
+  color: red;
+}
+
+.pokemon-comparison {
+  align-items: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  width: 100%;
+
+  table {
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    width: 80%;
+
+    thead {
+      background-color: $tertiary-background-color;
+      color: white;
+    }
+
+    th, td {
+      border: 1px solid #505050;
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    .pokemon-image {
+      img {
+        max-height: 100px;
+        max-width: 100px;
+      }
+    }
+
+    .pokemon-types {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+
+      li {
+        background-color: $highlight-color;
+        border-radius: 5px;
+        margin: 0.2rem;
+        padding: 0.2rem 0.5rem;
+      }
+    }
+  }
+
+  .clear-button {
+    background-color: #d9534f;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #c9302c;
+    }
+  }
+}
+
+@media (max-width: 768px) { 
+  .pokemon-comparison table {
+    font-size: 0.8rem; 
+    width: 95%;
+
+    th, td {
+      padding: 0.3rem; 
+    }
+  }
+}
+
+.green-text {
+  color: green;
+}
+
+.red-text {
   color: red;
 }
