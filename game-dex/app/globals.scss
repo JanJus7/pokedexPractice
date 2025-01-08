@@ -145,7 +145,7 @@ header {
         color: white;
       }
 
-      .boxFav {
+      .boxFavComp {
         background-color: transparent;
         border: none;
         font-size: 4rem;
@@ -256,4 +256,8 @@ nav {
 
 .textFav {
   color: #d0d0d0;
+}
+
+.fa-circle-dot {
+  color: red;
 }

@@ -37,6 +37,10 @@ export default function Navigation() {
     router.push(`/pokemon/favourites`);
   }
 
+  function toCompare() {
+    router.push(`/pokemon/compare`)
+  }
+
   return (
     <nav>
       <select
@@ -53,6 +57,9 @@ export default function Navigation() {
       </select>
       <button className="toFav navButtons" onClick={toFavourites}>
         Favourites
+      </button>
+      <button className="toCompare navButtons" onClick={toCompare}>
+        Compare
       </button>
     </nav>
   );
