@@ -107,43 +107,63 @@ header {
   flex-direction: column;
   gap: 2rem;
 
-  .boxFav {
-    background-color: #121212;
-    border-radius: 100%;
-    border: none;
-    font-weight: bolder;
-    font-size: 4rem;
-    color: #d0d0d0;
-    padding: 3px 6px 0 6px;
-    transition: background-color 0.8s ease, color 0.8s ease;
-  
-    &:hover {
-      background-color: #4d4d4d;
-      cursor: pointer;
-    }
-  }
-}
-
-.pokemon-item {
-  align-items: center;
-  background-color: #272727;
-  border-radius: 25px;
-  border: none;
-  color: white;
-  display: flex;
-  flex-direction: column-reverse;
-  height: 40rem;
-  justify-content: space-evenly;
-  transition: background-color 0.8s ease, color 0.8s ease;
-  width: 40rem;
-
-  &:hover {
+  .pokemon-container {
     background-color: #3f3f3f;
-    cursor: pointer;
-  }
+    border-radius: 25px;
+    border: none;
+    padding: 0.5rem;
 
-  h3 {
-    font-size: 5rem;
+    .pokemon-item {
+      align-items: center;
+      background-color: #272727;
+      border-radius: 25px;
+      border: none;
+      color: white;
+      display: flex;
+      flex-direction: column-reverse;
+      height: 40rem;
+      justify-content: space-evenly;
+      transition: background-color 0.8s ease, color 0.8s ease;
+      width: 40rem;
+    
+      &:hover {
+        background-color: #3f3f3f;
+        cursor: pointer;
+      }
+    }
+
+    .nameAndFav {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      h3 {
+        font-size: 5rem;
+        text-align: center;
+        flex-grow: 1;
+        color: white;
+      }
+
+      .boxFav {
+        background-color: transparent;
+        border: none;
+        font-size: 4rem;
+        padding: 3px 6px 0 6px;
+        transition: background-color 0.8s ease, color 0.8s ease;
+      
+        &:hover {
+          cursor: pointer;
+        }
+    
+        &.gray {
+          color: #d0d0d0;
+        }
+      
+        &.pink {
+          color: #ff69b4;
+        }
+      }
+    }
   }
 }
 

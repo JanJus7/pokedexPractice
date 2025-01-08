@@ -1,32 +1,32 @@
+import { useState, useEffect } from "react";
+
 function PokemonList({ data, onPokemonClick }) {
-  const addToFavourites = (pokemon) => {
+  const [favouritePokemonIds, setFavouritePokemonIds] = useState([]);
+
+  useEffect(() => {
     const storedFavourites =
       JSON.parse(localStorage.getItem("favourites")) || [];
+    const favouriteIds = storedFavourites.map((pokemon) => pokemon.id);
+    setFavouritePokemonIds(favouriteIds);
+  }, []);
 
-    const isAlreadyFavourite = storedFavourites.some(
-      (fav) => fav.id === pokemon.id
-    );
+  const handleFavouriteToggle = (pokemon) => {
+    const isFavourite = favouritePokemonIds.includes(pokemon.id);
 
-    if (isAlreadyFavourite) {
-      return;
+    if (isFavourite) {
+      setFavouritePokemonIds(
+        favouritePokemonIds.filter((id) => id !== pokemon.id)
+      );
+    } else {
+      setFavouritePokemonIds([...favouritePokemonIds, pokemon.id]);
     }
 
-    storedFavourites.push(pokemon);
-
-    localStorage.setItem("favourites", JSON.stringify(storedFavourites));
-  };
-
-  const discardFromFavourites = (pokemon) => {
     const storedFavourites =
       JSON.parse(localStorage.getItem("favourites")) || [];
-
-    const updatedFavourites = storedFavourites.filter(
-      (fav) => fav.id !== pokemon.id
-    );
-
+    const updatedFavourites = isFavourite
+      ? storedFavourites.filter((fav) => fav.id !== pokemon.id)
+      : [...storedFavourites, pokemon];
     localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
-
-    window.location.reload();
   };
 
   return (
@@ -37,19 +37,20 @@ function PokemonList({ data, onPokemonClick }) {
             className="pokemon-item"
             onClick={() => onPokemonClick(pokemon.name)}
           >
-            <h3>{pokemon.name}</h3>
             <p>Number in the pokedex: {pokemon.id}</p>
             <img src={pokemon.sprites.front_default} alt={pokemon.name} />
           </button>
-          <button className="boxFav" onClick={() => addToFavourites(pokemon)}>
-            <i className="fa-regular fa-heart"></i>
-          </button>
-          <button
-            className="boxFav"
-            onClick={() => discardFromFavourites(pokemon)}
-          >
-            <i className="fa-solid fa-heart-crack"></i>
-          </button>
+          <div className="nameAndFav">
+            <button
+              className={`boxFav ${
+                favouritePokemonIds.includes(pokemon.id) ? "pink" : "gray"
+              }`}
+              onClick={() => handleFavouriteToggle(pokemon)}
+            >
+              <i className="fa-solid fa-heart"></i>
+            </button>
+            <h3>{pokemon.name}</h3>
+          </div>
         </div>
       ))}
     </div>
